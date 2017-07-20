@@ -1,0 +1,26 @@
+{
+    "name": "xtpl",
+    "displayName": "xtemplate",
+    "description": "xtpl syntax highlight",
+    "version": "0.0.1",
+    "publisher": "luf",
+    "engines": {
+        "vscode": "^1.0.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "xtpl",
+            "aliases": ["xtpl", "xtpl"],
+            "extensions": [".xtpl"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "xtpl",
+            "scopeName": "text.html.xtpl",
+            "path": "./syntaxes/xtpl.tmLanguage"
+        }]
+    }
+}
