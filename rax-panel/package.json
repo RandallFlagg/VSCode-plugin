@@ -1,41 +1,54 @@
 {
-    "name": "rax-panel",
-    "displayName": "rax-panel",
-    "description": "rax, weex",
-    "version": "0.0.1",
-    "publisher": "luf",
-    "engines": {
-        "vscode": "^1.14.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:extension.rax-web",
-        "onCommand:extension.rax-weex"
-    ],
-    "main": "./extension",
-    "contributes": {
-        "commands": [{
-            "command": "extension.rax-web",
-            "title": "web",
-            "category": "Rax"
-        }, {
-            "command": "extension.rax-weex",
-            "title": "weex",
-            "category": "Rax"
-        }]
-    },
-    "scripts": {
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
-        "eslint": "^3.6.0",
-        "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
-    }
+  "name": "rax-panel",
+  "displayName": "rax-panel",
+  "description": "rax, weex",
+  "version": "0.0.1",
+  "publisher": "luf",
+  "engines": {
+    "vscode": "^1.14.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.rax-web",
+    "onCommand:extension.rax-weex",
+    "onCommand:extension.rax-hello"
+  ],
+  "main": "./extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.rax-web",
+        "title": "web",
+        "category": "Rax"
+      },
+      {
+        "command": "extension.rax-weex",
+        "title": "weex",
+        "category": "Rax"
+      },
+      {
+        "command": "extension.rax-hello",
+        "title": "hello",
+        "category": "Rax"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.0",
+    "mocha": "^2.3.3",
+    "eslint": "^3.6.0",
+    "@types/node": "^6.0.40",
+    "@types/mocha": "^2.2.32"
+  },
+  "dependencies": {
+    "ip": "^1.1.5",
+    "weex-toolkit": "^1.0.5"
+  }
 }
