@@ -11,13 +11,19 @@
     "Other"
   ],
   "activationEvents": [
+    "onCommand:extension.rax-init",
     "onCommand:extension.rax-web",
     "onCommand:extension.rax-weex",
-    "onCommand:extension.rax-hello"
+    "onCommand:extension.rax-publish"
   ],
-  "main": "./extension",
+  "main": "./src/index",
   "contributes": {
     "commands": [
+      {
+        "command": "extension.rax-init",
+        "title": "init",
+        "category": "Rax"
+      },
       {
         "command": "extension.rax-web",
         "title": "web",
@@ -29,8 +35,8 @@
         "category": "Rax"
       },
       {
-        "command": "extension.rax-hello",
-        "title": "hello",
+        "command": "extension.rax-publish",
+        "title": "publish",
         "category": "Rax"
       }
     ]
@@ -49,6 +55,7 @@
   },
   "dependencies": {
     "ip": "^1.1.5",
+    "rax-cli": "^0.4.7",
     "weex-toolkit": "^1.0.5"
   }
 }

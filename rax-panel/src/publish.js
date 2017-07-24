@@ -1,12 +1,13 @@
+var vscode = require('vscode');
 var http = require('http');
 var fs = require('fs');
 var querystring = require('querystring');
 
-function HackerHands() {
+function Publisher() {
   this.init.apply(this, arguments);
 }
 
-HackerHands.prototype = {
+Publisher.prototype = {
   init: function(conf) {
     this.filepath = conf && conf.path ? conf.path : '/etc/hosts';
   },
@@ -34,24 +35,22 @@ HackerHands.prototype = {
 
       var req = http.request(postOptions, function(res) {
         res.on('data', function(chunk) {
-          console.log(chunk.toString());
-        });
+          var data = chunk.toString();
 
-        res.on('end', function() {
-          console.log('request end.');
+          vscode.window.showInformationMessage(data);
         });
       });
 
       req.on('error', function(e) {
-        console.error('request error: ', e);
+        vscode.window.showErrorMessage('request error: ', e);
       });
 
       req.write(postData);
       req.end();
-    } catch(e) {
-      console.error(e);
+    } catch(error) {
+      vscode.window.showErrorMessage(error);
     }
   }
 };
 
-module.exports = HackerHands;
+module.exports = Publisher;
