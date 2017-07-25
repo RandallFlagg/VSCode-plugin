@@ -1,47 +1,73 @@
 var vscode = require('vscode');
 var fs = require('fs');
 var ip = require('ip');
+var cp = require('child_process');
+var detect = require('detect-port');
 
 function Previewer() {
   this.init.apply(this, arguments);
 }
 
 Previewer.prototype = {
+  raxServerPort: 9999,
   init: function(conf) {
+    var self = this;
+
     // var config = vscode.workspace.getConfiguration('rax');
+    self.platform = conf.platform;
+    self.projectPath = '/tmp/helloworld';//conf.projectPath;
 
-    this.platform = conf.platform;
+    detect(self.raxServerPort, (err, _port) => {
+      if (err) {
+        console.error(err);
+      }
 
-    this.tmpFilePath = `/tmp/vscode-rax-extension-panels${parseInt(Math.random() * 100)}.html`;
-
-    if (this.platform === 'web') {
-      this.previewColumn = vscode.ViewColumn.Two;
-      this.webviewUrl = 'http://127.0.0.1:3000/slider.html';
-      this.webTools = `
-          <div style="width: 375px; height: 40px; text-align: left;">
-              <input type="text" value="${this.webviewUrl}" style="width: 260px" />
-              <a href="command:_webview.openDevTools">debug</a>
-          </div>
-      `;
-      this.width = 375;
-      this.height = 667;
-    } else {
-      this.previewColumn = vscode.ViewColumn.One;
-      this.webviewUrl = `http://${ip.address()}:8088/`;
-      this.webTools = '';
-      this.width = '100%';
-      this.height = '100%';
-    }
-
-    var htmlContent = this._getHtmlContent();
-    this._openWebviewWithContent(htmlContent);
+      if (self.raxServerPort == _port) {
+        self._startServer();
+      } else {
+        self._openWebview();
+      }
+    });
   },
-  _openWebviewWithContent: function(htmlContent) {
-    try {
-      fs.writeFileSync(this.tmpFilePath, htmlContent);
+  checkRaxServerStat: function() {
 
-      var uri = vscode.Uri.file(this.tmpFilePath);
-      vscode.commands.executeCommand('vscode.previewHtml', uri, this.columnOption, 'Rax Preview').then((success) => { }, (error) => {
+  },
+  _startServer: function() {
+    var self = this;
+
+    var raxServer = cp.spawn('npm', ['run', 'start'], {cwd: this.projectPath});
+
+    raxServer.stdout.on('data', function(data) {
+      var str = data.toString();
+
+      if (str.indexOf('Starting the development server') > -1) {
+        self._openWebview();
+      }
+    });
+
+    raxServer.stderr.on('data', function(data) {
+      vscode.window.showErrorMessage(data.toString());
+    });
+
+    raxServer.on('error', function(e) {
+      vscode.window.showErrorMessage(e);
+    });
+
+    raxServer.on('close', function(code) {
+      console.log('rax server exited with ' + code);
+    });
+  },
+  _openWebview: function() {
+    var self = this;
+    var htmlContent = self._getHtmlContent();
+    var tmpFilePath = `/tmp/vscode-rax-extension-panels${parseInt(Math.random() * 100)}.html`;
+    var columnOption = this.platform === 'web' ? vscode.ViewColumn.Two : vscode.ViewColumn.One;
+
+    try {
+      fs.writeFileSync(tmpFilePath, htmlContent);
+
+      var uri = vscode.Uri.file(tmpFilePath);
+      vscode.commands.executeCommand('vscode.previewHtml', uri, columnOption, 'Rax Preview').then((success) => { }, (error) => {
         vscode.window.showErrorMessage(error);
       });
     } catch(error) {
@@ -49,6 +75,23 @@ Previewer.prototype = {
     }
   },
   _getHtmlContent: function() {
+    if (this.platform === 'web') {
+      var webviewUrl = `http://${ip.address()}:${this.raxServerPort}/`;
+      var webTools = `
+          <div style="width: 375px; height: 40px; text-align: left;">
+              <input type="text" value="${webviewUrl}" style="width: 260px" />
+              <a href="command:_webview.openDevTools">debug</a>
+          </div>
+      `;
+      var width = 375;
+      var height = 667;
+    } else {
+      var webviewUrl = `http://${ip.address()}:8088/`;
+      var webTools = '';
+      var width = '100%';
+      var height = '100%';
+    }
+
     return `
         <!DOCTYPE html>
         <html lang="en" style="height: 100%;">
@@ -70,8 +113,8 @@ Previewer.prototype = {
                 </style>
             </head>
             <body id="content">
-                ${this.webTools}
-                <iframe src="${this.webviewUrl}" width="${this.width}" height="${this.height}"
+                ${webTools}
+                <iframe src="${webviewUrl}" width="${width}" height="${height}"
                     frameborder="1" scrolling="yes" style="pointer-events: auto;"> </iframe>
             </body>
         </html>

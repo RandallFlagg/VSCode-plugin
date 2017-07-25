@@ -54,8 +54,10 @@
     "@types/mocha": "^2.2.32"
   },
   "dependencies": {
+    "detect-port": "^1.2.1",
     "ip": "^1.1.5",
     "rax-cli": "^0.4.7",
+    "weex-devtool": "^0.2.80",
     "weex-toolkit": "^1.0.5"
   }
 }

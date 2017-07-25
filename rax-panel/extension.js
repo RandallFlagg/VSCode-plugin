@@ -1,5 +1,5 @@
-import vscode from 'vscode';
-import fs from 'fs';
+var vscode = require('vscode');
+var fs = require('fs');
 
 const activate = context => {
     const raxInit = vscode.commands.registerCommand('extension.rax-init', () => {

@@ -50,7 +50,7 @@ InitHandler.prototype = {
     setName.then(function(name) {
       if (name) {
         self.projectName = name;
-        self.projectPath = path.join(self.projectPath, self.projectType, self.projectName);
+        self.projectPath = path.join(self.projectPath, self.projectName);
         self._createProject();
       } else {
         vscode.window.showErrorMessage('创建失败：未设置项目名称');
@@ -60,10 +60,26 @@ InitHandler.prototype = {
   _createProject: function() {
     var self = this;
     var rax = path.join(__dirname, '../node_modules/.bin/rax');
-    var cwd = path.join(self.projectPath, '..');
+    var options = {
+      cwd: path.join(self.projectPath, '..')
+    };
 
     try {
-      var raxIniter = cp.spawn(rax, ['init', self.projectName]);
+      /**
+       * rax-cli
+       * 215
+       * tnpm
+       *
+       * 85
+       * answers = {
+       * projectName: argv['_'][1],
+       * projectAuthor: 'rax',
+       * autoInstallModules: true
+       * };
+       *
+       */
+
+      var raxIniter = cp.spawn(rax, ['init', self.projectName], options);
 
       raxIniter.stdout.on('data', function(data) {
         var str = data.toString();
@@ -83,7 +99,8 @@ InitHandler.prototype = {
         console.log('rax process exited with ' + code);
 
         if (code == 0) {
-          vscode.commands.executeCommand('vscode.openFolder', self.projectPath).then(() => {}, (error) => {
+          var uri = vscode.Uri.file(self.projectPath);
+          vscode.commands.executeCommand('vscode.openFolder', uri).then(() => {}, (error) => {
             vscode.window.showErrorMessage(error);
           });
         }
