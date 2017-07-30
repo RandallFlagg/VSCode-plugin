@@ -6,4 +6,4 @@ Preview Anything, html、svg etc.
 - AnyView
 
 ### demo
-![demo](media/demo.gif)
+![demo](assets/demo.gif)
