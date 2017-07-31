@@ -2,7 +2,7 @@
     "name": "Anyview",
     "displayName": "Anyview",
     "description": "preview anything",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "luf",
     "engines": {
         "vscode": "^1.14.0"

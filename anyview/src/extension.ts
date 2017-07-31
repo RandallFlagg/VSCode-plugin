@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      let uri = document.uri;
+      uri = document.uri;
       if (!uri) {
         return;
       }
